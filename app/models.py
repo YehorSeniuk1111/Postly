@@ -298,10 +298,17 @@ class Post(db.Model):
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
+                        'h1', 'h2', 'h3', 'p', 'img', 'video', 'source', 'iframe']
+        allowed_attrs = {
+
+        'a': ['href', 'title', 'rel'],
+        'video':  ['src', 'controls', 'width', 'height', 'poster'],
+        'source': ['src', 'type'],
+        'iframe': ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen'],
+        'img': ['src', 'alt', 'title', 'width', 'height']}
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
-            tags=allowed_tags, strip=True))
+            tags=allowed_tags, attributes=allowed_attrs, strip=True))
 
     def to_json(self):
         json_post = {
